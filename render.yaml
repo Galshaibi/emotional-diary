@@ -3,6 +3,7 @@ services:
   - type: web
     name: emotional-diary-api
     env: python
+    region: frankfurt
     buildCommand: cd backend && pip install -r requirements.txt
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -10,11 +11,18 @@ services:
         value: 3.9.0
       - key: DATABASE_URL
         value: postgresql://postgres:postgres@localhost:5432/emotional_diary
+      - key: SECRET_KEY
+        value: "your-secret-key-here"
+      - key: ALGORITHM
+        value: "HS256"
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
 
   # Frontend service
-  - type: web
+  - type: static
     name: emotional-diary-frontend
     env: static
+    region: frankfurt
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/build
     envVars:

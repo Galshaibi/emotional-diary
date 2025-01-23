@@ -24,6 +24,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     logger.debug(f"Verifying password...")
     result = pwd_context.verify(plain_password, hashed_password)
@@ -58,6 +61,71 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     if user is None:
         raise credentials_exception
     return user
+
+@router.post("/register")
+async def register(
+    email: str,
+    password: str,
+    first_name: str,
+    last_name: str,
+    user_type: str = "PATIENT",
+    db: Session = Depends(get_db)
+) -> dict:
+    logger.info(f"Registration attempt for user: {email}")
+    
+    # Check if user exists
+    if db.query(models.User).filter(models.User.email == email).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    # Create new user
+    hashed_password = get_password_hash(password)
+    db_user = models.User(
+        email=email,
+        hashed_password=hashed_password,
+        first_name=first_name,
+        last_name=last_name,
+        user_type=user_type,
+        created_at=datetime.utcnow()
+    )
+    
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    
+    # Create profile based on user type
+    if user_type == "PATIENT":
+        patient_profile = models.Patient(
+            user_id=db_user.id,
+            date_of_birth=None,
+            gender=None,
+            phone_number=None
+        )
+        db.add(patient_profile)
+        db.commit()
+    
+    logger.info(f"Registration successful for user: {email}")
+    
+    # Create access token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": db_user.email, "type": db_user.user_type},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": db_user.id,
+            "email": db_user.email,
+            "first_name": db_user.first_name,
+            "last_name": db_user.last_name,
+            "user_type": db_user.user_type
+        }
+    }
 
 @router.post("/token")
 async def login(

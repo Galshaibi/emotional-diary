@@ -17,16 +17,16 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM node:16-alpine
 
 # Copy built assets from build stage
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/build /app/build
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install serve
+RUN npm install -g serve
 
-# Expose port 80
-EXPOSE 80
+# Expose port 10000
+EXPOSE 10000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve
+CMD ["serve", "-s", "build", "-l", "10000"]

@@ -89,10 +89,11 @@ function App() {
         <CssBaseline />
         <Router>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
-              path="/*"
+              path="/app/*"
               element={
                 <PrivateRoute>
                   <Layout>

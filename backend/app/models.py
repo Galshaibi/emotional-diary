@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, JSON, Float, Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from enum import Enum
@@ -16,7 +16,7 @@ class User(Base):
     hashed_password = Column(String)
     first_name = Column(String)
     last_name = Column(String)
-    user_type = Column(SQLAlchemyEnum(UserType))
+    user_type = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -67,14 +67,11 @@ class DiaryEntry(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    date = Column(DateTime, default=datetime.utcnow)
-    emotions = Column(JSON)  # Store emotions and their intensities
-    medications_taken = Column(Boolean)
-    medications_notes = Column(String, nullable=True)
-    self_harm = Column(Boolean)
-    suicidal_thoughts = Column(Boolean)
-    stressful_events = Column(Boolean)
-    notes = Column(String, nullable=True)
+    mood = Column(Integer)
+    content = Column(String)
+    activities = Column(String)
+    thoughts = Column(String)
+    emotions = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships

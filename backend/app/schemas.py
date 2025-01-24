@@ -1,17 +1,13 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from enum import Enum
-
-class UserType(str, Enum):
-    PATIENT = "PATIENT"
-    THERAPIST = "THERAPIST"
+from typing import Optional, List
+from .models import UserType
 
 class UserBase(BaseModel):
-    email: EmailStr = Field(...)
-    first_name: str = Field(...)
-    last_name: str = Field(...)
-    user_type: UserType = Field(...)
+    email: EmailStr
+    first_name: str
+    last_name: str
+    user_type: UserType
 
     class Config:
         from_attributes = True
@@ -25,7 +21,7 @@ class UserBase(BaseModel):
         }
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=8)
+    password: str
 
     class Config:
         json_schema_extra = {
@@ -85,14 +81,11 @@ class Therapist(TherapistBase):
         from_attributes = True
 
 class DiaryEntryBase(BaseModel):
-    date: datetime
-    emotions: dict
-    medications_taken: bool
-    medications_notes: Optional[str] = None
-    self_harm: bool
-    suicidal_thoughts: bool
-    stressful_events: bool
-    notes: Optional[str] = None
+    mood: int
+    content: str
+    activities: str
+    thoughts: str
+    emotions: List[str]
 
 class DiaryEntryCreate(DiaryEntryBase):
     pass

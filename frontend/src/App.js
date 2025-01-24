@@ -9,8 +9,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 // Components
 import Layout from './components/layout/Layout';
-import Login from './components/auth/Login';
-import Register from './components/auth/Register';
 import DiaryEntryForm from './components/diary/DiaryEntryForm';
 import DiaryEntryList from './components/diary/DiaryEntryList';
 import PatientDashboard from './components/dashboard/PatientDashboard';
@@ -77,11 +75,6 @@ const theme = createTheme({
   },
 });
 
-const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
-};
-
 function App() {
   return (
     <CacheProvider value={cacheRtl}>
@@ -89,25 +82,21 @@ function App() {
         <CssBaseline />
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Navigate to="/app/dashboard/patient" />} />
             <Route
               path="/app/*"
               element={
-                <PrivateRoute>
-                  <Layout>
-                    <Routes>
-                      <Route path="/diary/new" element={<DiaryEntryForm />} />
-                      <Route path="/diary" element={<DiaryEntryList />} />
-                      <Route path="/dashboard/patient" element={<PatientDashboard />} />
-                      <Route path="/dashboard/therapist" element={<TherapistDashboard />} />
-                      <Route path="/notifications/settings" element={<NotificationSettings />} />
-                      <Route path="/notifications" element={<NotificationCenter />} />
-                      <Route path="/" element={<Navigate to="/dashboard/patient" />} />
-                    </Routes>
-                  </Layout>
-                </PrivateRoute>
+                <Layout>
+                  <Routes>
+                    <Route path="/diary/new" element={<DiaryEntryForm />} />
+                    <Route path="/diary" element={<DiaryEntryList />} />
+                    <Route path="/dashboard/patient" element={<PatientDashboard />} />
+                    <Route path="/dashboard/therapist" element={<TherapistDashboard />} />
+                    <Route path="/notifications/settings" element={<NotificationSettings />} />
+                    <Route path="/notifications" element={<NotificationCenter />} />
+                    <Route path="/" element={<Navigate to="/dashboard/patient" />} />
+                  </Routes>
+                </Layout>
               }
             />
           </Routes>

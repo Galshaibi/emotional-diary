@@ -28,6 +28,6 @@ services:
     staticPublishPath: build
     envVars:
       - key: NODE_VERSION
-        value: 16.0.0
+        value: 18.0.0
       - key: REACT_APP_API_URL
         value: https://emotional-diary-api.onrender.com

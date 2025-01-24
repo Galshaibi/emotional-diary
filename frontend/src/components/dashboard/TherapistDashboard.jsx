@@ -31,7 +31,6 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { format } from 'date-fns';
-import { he } from 'date-fns/locale';
 import axios from 'axios';
 import { emotions } from '../../data/emotions';
 

@@ -10,7 +10,6 @@ import {
   Card,
   Divider,
   Chip,
-  useTheme,
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
@@ -19,7 +18,6 @@ import {
 } from '@mui/icons-material';
 
 const NotificationCenter = () => {
-  const theme = useTheme();
   const [notifications, setNotifications] = useState([
     {
       id: 1,

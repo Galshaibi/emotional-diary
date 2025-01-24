@@ -19,12 +19,12 @@ services:
         value: "30"
 
   # Frontend service
-  - type: static
+  - type: web
     name: emotional-diary-frontend
-    env: static
+    env: node
     region: frankfurt
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/build
+    startCommand: cd frontend && npx serve -s build -l $PORT
     envVars:
       - key: NODE_VERSION
         value: 16.0.0

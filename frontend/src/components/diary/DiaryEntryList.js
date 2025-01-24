@@ -7,7 +7,9 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Button
+  Button,
+  Chip,
+  Stack
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -19,12 +21,8 @@ const DiaryEntryList = () => {
   useEffect(() => {
     const fetchEntries = async () => {
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/diary/entries`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
+          `${process.env.REACT_APP_API_URL}/diary/entries`
         );
         setEntries(response.data);
       } catch (error) {
@@ -84,6 +82,13 @@ const DiaryEntryList = () => {
                         <Typography component="span" variant="body2" color="text.primary" align="right">
                           מצב רוח: {entry.mood}/10
                         </Typography>
+                        {entry.emotions && entry.emotions.length > 0 && (
+                          <Stack direction="row" spacing={1} sx={{ my: 1, justifyContent: 'flex-end' }}>
+                            {entry.emotions.map((emotion, i) => (
+                              <Chip key={i} label={emotion} size="small" />
+                            ))}
+                          </Stack>
+                        )}
                         <Typography variant="body2" align="right">
                           {entry.content}
                         </Typography>

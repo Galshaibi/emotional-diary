@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Slider, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography, Slider, Paper, Chip, Autocomplete } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+const emotions = [
+  'שמחה',
+  'עצב',
+  'כעס',
+  'פחד',
+  'חרדה',
+  'תקווה',
+  'אכזבה',
+  'גאווה',
+  'בושה',
+  'אשמה',
+  'בדידות',
+  'אהבה',
+  'שלווה',
+  'תסכול',
+  'התרגשות',
+  'דאגה',
+  'הקלה',
+  'בלבול'
+];
 
 const DiaryEntryForm = () => {
   const navigate = useNavigate();
@@ -9,7 +30,8 @@ const DiaryEntryForm = () => {
     mood: 5,
     content: '',
     activities: '',
-    thoughts: ''
+    thoughts: '',
+    emotions: []
   });
 
   const handleSubmit = async (e) => {
@@ -47,6 +69,33 @@ const DiaryEntryForm = () => {
             max={10}
             marks
             valueLabelDisplay="auto"
+          />
+        </Box>
+
+        <Box sx={{ mb: 3 }}>
+          <Typography gutterBottom align="right">
+            אילו רגשות חווית היום?
+          </Typography>
+          <Autocomplete
+            multiple
+            options={emotions}
+            value={entry.emotions}
+            onChange={(_, newValue) => setEntry({ ...entry, emotions: newValue })}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip label={option} {...getTagProps({ index })} />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="בחר רגשות"
+                InputProps={{
+                  ...params.InputProps,
+                  style: { textAlign: 'right' }
+                }}
+              />
+            )}
           />
         </Box>
 
